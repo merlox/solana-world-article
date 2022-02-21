@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("BJ2wuQvdMm7SNQbJRyiwvSEt738MtZQLwUnngpaVxRPn");
+declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 
 #[program]
 pub mod solana_global_article {
@@ -11,7 +11,39 @@ pub mod solana_global_article {
         // Initialize the variables (this is required)
         article_account.writers = Vec::new();
         article_account.content = ("").to_string();
-        article_account.person_that_pays = *ctx.accounts.person_that_pays.key;
+
+        Ok(())
+    }
+
+    pub fn write_into_article(
+        ctx: Context<WriteIntoArticle>,
+        three_words: String,
+    ) -> ProgramResult {
+        // To update the article string
+        // TODO Check if this sender has already added words or not, words can't be updated
+        let article = &mut ctx.accounts.article;
+        let split_iterator = three_words.trim().split(" ");
+        let mut final_words = Vec::new();
+        let mut counter_added = 0;
+        for s in split_iterator {
+            if s.trim().is_empty() {
+                continue;
+            }
+            final_words.push(s);
+            counter_added += 1;
+            if counter_added >= 3 {
+                break;
+            }
+        }
+        // Join the 3 words after removing spaces
+        let mut joined_words = final_words.join(" ");
+        // Add a space at the end with this
+        joined_words.push_str(" ");
+        article.content.push_str(&joined_words);
+
+        // article.writers.push()
+        // article.content = three_words;
+
         Ok(())
     }
 }
@@ -26,13 +58,23 @@ pub struct Initialize<'info> {
         + 10000 // make the message max 10k bytes long
     )]
     pub article: Account<'info, Article>,
+    #[account(mut)]
     pub person_that_pays: Signer<'info>,
     pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct WriteIntoArticle<'info> {
+    // Here goes the info that you want to modify like this
+    #[account(mut)]
+    pub article: Account<'info, Article>,
 }
 
 #[account]
 pub struct Article {
     pub writers: Vec<Pubkey>,
     pub content: String,
-    pub person_that_pays: Pubkey,
 }
+
+// #[error]
+// pub enum Errors {}
