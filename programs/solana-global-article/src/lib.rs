@@ -41,6 +41,8 @@ pub mod solana_global_article {
         joined_words.push_str(" ");
         article.content.push_str(&joined_words);
 
+        msg!("program pubkey {}", program.pubkey);
+
         // article.writers.push()
         // article.content = three_words;
 
