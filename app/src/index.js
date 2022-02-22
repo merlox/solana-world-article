@@ -10,7 +10,7 @@ const App = () => {
 			<Route
 				path='/'
 				exact={true}
-				render={() => <Home time={time} />}
+				render={() => <Home />}
 			/>
 		</Switch>
 	)

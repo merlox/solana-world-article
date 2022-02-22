@@ -1,11 +1,11 @@
-[programs.localnet]
+[programs.devnet]
 solana_global_article = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "/Users/merunas/.config/solana/id.json"
 
 [scripts]

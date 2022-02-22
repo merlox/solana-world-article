@@ -9,7 +9,6 @@ pub mod solana_global_article {
         // Get the article
         let article_account = &mut ctx.accounts.article;
         // Initialize the variables (this is required)
-        article_account.writers = Vec::new();
         article_account.content = ("").to_string();
 
         Ok(())
@@ -17,10 +16,9 @@ pub mod solana_global_article {
 
     pub fn write_into_article(
         ctx: Context<WriteIntoArticle>,
-        three_words: String,
+        three_words: String, // If more, after 3 they will be removed
     ) -> ProgramResult {
         // To update the article string
-        // TODO Check if this sender has already added words or not, words can't be updated
         let article = &mut ctx.accounts.article;
         let split_iterator = three_words.trim().split(" ");
         let mut final_words = Vec::new();
@@ -39,12 +37,8 @@ pub mod solana_global_article {
         let mut joined_words = final_words.join(" ");
         // Add a space at the end with this
         joined_words.push_str(" ");
+        // Article content gets immediately updated
         article.content.push_str(&joined_words);
-
-        msg!("program pubkey {}", program.pubkey);
-
-        // article.writers.push()
-        // article.content = three_words;
 
         Ok(())
     }
@@ -74,9 +68,5 @@ pub struct WriteIntoArticle<'info> {
 
 #[account]
 pub struct Article {
-    pub writers: Vec<Pubkey>,
     pub content: String,
 }
-
-// #[error]
-// pub enum Errors {}
