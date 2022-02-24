@@ -27,6 +27,9 @@ pub mod solana_global_article {
             if s.trim().is_empty() {
                 continue;
             }
+            if s.trim().len() >= 15 {
+                return Err(Errors::WordTooLong.into());
+            }
             final_words.push(s);
             counter_added += 1;
             if counter_added >= 3 {
@@ -69,4 +72,10 @@ pub struct WriteIntoArticle<'info> {
 #[account]
 pub struct Article {
     pub content: String,
+}
+
+#[error]
+pub enum Errors {
+    #[msg("Each word must be less than 15 characters")]
+    WordTooLong,
 }

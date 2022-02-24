@@ -49,4 +49,37 @@ describe('solana-global-article', () => {
     const articleData = await program.account.article.fetch(deployerKeypair.publicKey)
     expect(articleData.content).to.equal('hey ') // Note the space at the end, added by the program
   })
+
+  it("should write 3 words two times", async () => {
+    const deployerKeypair = anchor.web3.Keypair.generate()
+    const personThatPays = program.provider.wallet
+
+    // Add your test here
+    await program.rpc.initialize({
+      accounts: {
+        article: deployerKeypair.publicKey,
+        personThatPays: personThatPays.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [deployerKeypair],
+    })
+    
+    await program.rpc.writeIntoArticle('hey whats up', {
+      accounts: {
+        article: deployerKeypair.publicKey,
+      },
+      signers: [],
+    })
+
+    await program.rpc.writeIntoArticle('this is my', {
+      accounts: {
+        article: deployerKeypair.publicKey,
+      },
+      signers: [],
+    })
+
+    const articleData = await program.account.article.fetch(deployerKeypair.publicKey)
+    console.log('article data', articleData)
+    expect(articleData.content).to.equal('hey whats up this is my ') // Note the space at the end, added by the program
+  })
 })
