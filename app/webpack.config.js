@@ -3,12 +3,27 @@ const path = require('path')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 
 const config = {
 	entry: './src/index.js',
 	output: {
 		path: path.resolve(__dirname, 'docs'),
 		filename: 'bundle.js',
+	},
+	resolve: {
+		fallback: {
+			fs: false,
+			tls: false,
+			net: false,
+			path: false,
+			zlib: false,
+			http: false,
+			https: false,
+			stream: false,
+			crypto: false,
+			process: false,
+		},
 	},
 	module: {
 		rules: [
@@ -39,6 +54,7 @@ const config = {
 		],
 	},
 	plugins: [
+		new NodePolyfillPlugin(),
 		new CleanWebpackPlugin(),
 		new CopyWebpackPlugin({
 			patterns: [

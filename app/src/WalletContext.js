@@ -19,11 +19,11 @@ import {
 import {
 	WalletModalProvider,
 } from '@solana/wallet-adapter-react-ui'
+import config from './../config'
 require('@solana/wallet-adapter-react-ui/styles.css')
 
 export default ({ children }) => {
 	const network = WalletAdapterNetwork.Devnet
-	const endpoint = clusterApiUrl(network)
 	const wallets = [
 		new PhantomWalletAdapter(),
 		new SlopeWalletAdapter(),
@@ -35,7 +35,7 @@ export default ({ children }) => {
 	]
 
 	return (
-		<ConnectionProvider endpoint={endpoint}>
+		<ConnectionProvider endpoint={config.endpoint}>
 			<WalletProvider wallets={wallets} autoConnect>
 				<WalletModalProvider>
 					{children}
