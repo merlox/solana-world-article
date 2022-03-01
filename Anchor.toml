@@ -1,12 +1,12 @@
 [programs.localnet]
-solana_global_article = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+solana_global_article = "CQ2H1fTdvZUwMLfUMx6Qct4g5yMpWfmecR4p1eayoorv"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
 cluster = "localnet"
-wallet = "/Users/merunas/.config/solana/id.json"
+wallet = "/Users/merunas/.config/solana/localnet.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"

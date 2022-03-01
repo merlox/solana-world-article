@@ -11,7 +11,7 @@
           "isSigner": true
         },
         {
-          "name": "personThatPays",
+          "name": "authority",
           "isMut": true,
           "isSigner": true
         },
@@ -60,5 +60,8 @@
       "name": "WordTooLong",
       "msg": "Each word must be less than 15 characters"
     }
-  ]
+  ],
+  "metadata": {
+    "address": "CQ2H1fTdvZUwMLfUMx6Qct4g5yMpWfmecR4p1eayoorv"
+  }
 }

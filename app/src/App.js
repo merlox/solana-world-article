@@ -6,7 +6,6 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { Connection, PublicKey } from '@solana/web3.js'
 import idl from './solana_global_article.json'
 import { Program, Provider, web3 } from '@project-serum/anchor'
-import * as anchor from '@project-serum/anchor'
 import config from './../config'
 
 const programID = new PublicKey(idl.metadata.address)
@@ -17,26 +16,32 @@ const SOLANA_BOOK_KEY = new PublicKey(config.solana_book_key)
 const Main = () => {
 	const [inputValue, setInputValue] = useState('')
 	const [isLoading, setIsLoading] = useState(true)
-	const { connected, publicKey, sendTransaction } = useWallet()
-
 	const wallet = useAnchorWallet()
 	const { connection } = useConnection()
 	
+	useEffect(() => {
+		if (wallet) {
+			getArticle()
+		}
+	}, [wallet])
+
 	const initialize = async () => {
 		const provider = new Provider(connection, wallet, {})
 		const program = new Program(idl, programID, provider)
-		const keypairOne = Keypair.generate()
+		const keypairOne = Keypair.fromSecretKey(Uint8Array.from(config.samplePrivateKey))
+
 		try {
 			await program.rpc.initialize({
 				accounts: {
-					personThatPays: provider.wallet.publicKey,
+					authority: provider.wallet.publicKey,
 					article: keypairOne.publicKey,
 					systemProgram: SystemProgram.programId,
 				},
 				signers: [keypairOne],
 			})
 
-			console.log('Done', keypairOne.publicKey.toString())
+			console.log('done')
+			console.log('done', keypairOne.publicKey.toString())
 		} catch (e) {
 			console.log('#1', e)
 			return alert(e)
@@ -56,19 +61,18 @@ const Main = () => {
 		const provider = new Provider(connection, wallet, {})
 		const program = new Program(idl, programID, provider)
 		const userAcc = generateUserKey(programID, provider.wallet.publicKey)
+		const keypairOne = Keypair.fromSecretKey(Uint8Array.from(config.samplePrivateKey))
 
 		console.log('userAcc', userAcc)
-		console.log('provider.wallet', provider.wallet)
-		console.log('provider', provider)
 		console.log('provider.wallet.publicKey', provider.wallet.publicKey.toString())
+		console.log('keypairOne.publicKey.publicKey', keypairOne.publicKey.toString())
 
 		try {
 			console.log('inputValue', inputValue)
 			await program.rpc.writeIntoArticle(inputValue, {
 				accounts: {
-					article: provider.wallet.publicKey,
+					article: keypairOne.publicKey,
 				},
-				signers: []
 			})
 			console.log('Done')
 		} catch (e) {
@@ -76,7 +80,16 @@ const Main = () => {
 			return alert(e)
 		}
 
-		const articleData = await program.account.article.fetch(provider.wallet.publicKey)
+		const articleData = await program.account.article.fetch(keypairOne.publicKey)
+		console.log('article data', articleData)
+	}
+
+	const getArticle = async () => {
+		const provider = new Provider(connection, wallet, {})
+		const program = new Program(idl, programID, provider)
+		const keypairOne = Keypair.fromSecretKey(Uint8Array.from(config.samplePrivateKey))
+
+		const articleData = await program.account.article.fetch(keypairOne.publicKey)
 		console.log('article data', articleData)
 	}
 
@@ -117,7 +130,7 @@ const Main = () => {
 				</Paper>
 			)}
 
-			<Button onClick={initialize}>initialize</Button>
+			{/* <Button onClick={initialize} color="secondary" variant="contained">initialize</Button> */}
 
 			<div>
 				<TextField

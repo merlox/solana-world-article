@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("CQ2H1fTdvZUwMLfUMx6Qct4g5yMpWfmecR4p1eayoorv");
 
 #[program]
 pub mod solana_global_article {
@@ -51,14 +51,14 @@ pub mod solana_global_article {
 pub struct Initialize<'info> {
     #[account(
         init,
-        payer = person_that_pays,
+        payer = authority,
         space = 8 // account discriminator
         + 32 // pubkey
-        + 10000 // make the message max 10k bytes long
+        + 1000 // make the message max 100 bytes long
     )]
     pub article: Account<'info, Article>,
     #[account(mut)]
-    pub person_that_pays: Signer<'info>,
+    pub authority: Signer<'info>,
     pub system_program: Program<'info, System>,
 }
 

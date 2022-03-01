@@ -12,13 +12,13 @@ describe('solana-global-article', () => {
 
   it('Is initialized!', async () => {
     const deployerKeypair = anchor.web3.Keypair.generate()
-    const personThatPays = program.provider.wallet
+    const authority = program.provider.wallet
 
     // Add your test here
     await program.rpc.initialize({
       accounts: {
         article: deployerKeypair.publicKey,
-        personThatPays: personThatPays.publicKey,
+        authority: authority.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId,
       },
       signers: [deployerKeypair],
@@ -27,13 +27,13 @@ describe('solana-global-article', () => {
 
   it('Should write an article with 1 word successfully', async () => {
     const deployerKeypair = anchor.web3.Keypair.generate()
-    const personThatPays = program.provider.wallet
+    const authority = program.provider.wallet
 
     // Add your test here
     await program.rpc.initialize({
       accounts: {
         article: deployerKeypair.publicKey,
-        personThatPays: personThatPays.publicKey,
+        authority: authority.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId,
       },
       signers: [deployerKeypair],
@@ -52,13 +52,13 @@ describe('solana-global-article', () => {
 
   it("should write 3 words two times", async () => {
     const deployerKeypair = anchor.web3.Keypair.generate()
-    const personThatPays = program.provider.wallet
+    const authority = program.provider.wallet
 
     // Add your test here
     await program.rpc.initialize({
       accounts: {
         article: deployerKeypair.publicKey,
-        personThatPays: personThatPays.publicKey,
+        authority: authority.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId,
       },
       signers: [deployerKeypair],
