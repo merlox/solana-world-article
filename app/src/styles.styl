@@ -17,13 +17,9 @@
 .wallet-connect
   width: 200px
 
-.words-input
-  width: 410px
-  transform: translateX(-50%)
-  position: relative
-  left: 50%
-
 .content-box
+  max-width: 800px
+  margin: auto
   padding: 20px
   margin-top: 10px
   margin-bottom: 30px
@@ -32,6 +28,29 @@
   width: 70px
   margin-top: 7px
 
+.three-words-input-container
+  max-width: 800px
+  margin: auto
+  display: flex
+  justify-content: space-around
+  align-items: center
+
+.words-input
+  width: 410px
+
+.helper-description
+  max-width: 800px
+  margin: auto
+  margin-top: 100px
+  color: grey
+  font-size: 10pt
+  
 @media (max-width: 500px)
-  .words-input
-    width: 100%
+  .three-words-input-container
+    flex-direction: column
+
+    .submit-button
+      margin-top: 20px
+
+    .words-input
+      width: 100%

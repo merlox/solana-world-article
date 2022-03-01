@@ -10,7 +10,7 @@ import config from './../config'
 
 const programID = new PublicKey(idl.metadata.address)
 const { SystemProgram, Keypair } = web3
-const SOLANA_BOOK_KEY = new PublicKey(config.solana_book_key)
+const solanaArticleAccount = new PublicKey(config.solana_article_account)
 
 // Gotta separate the main component and App to add the WalletContext
 const Main = () => {
@@ -18,17 +18,19 @@ const Main = () => {
 	const [isLoading, setIsLoading] = useState(true)
 	const wallet = useAnchorWallet()
 	const { connection } = useConnection()
+	const [solanaArticle, setSolanaArticle] = useState('')
 	
 	useEffect(() => {
 		if (wallet) {
-			getArticle()
+			getAndSetArticle()
 		}
 	}, [wallet])
 
 	const initialize = async () => {
 		const provider = new Provider(connection, wallet, {})
 		const program = new Program(idl, programID, provider)
-		const keypairOne = Keypair.fromSecretKey(Uint8Array.from(config.samplePrivateKey))
+		// const keypairOne = Keypair.fromSecretKey(Uint8Array.from(config.samplePrivateKey))
+		const keypairOne = Keypair.generate()
 
 		try {
 			await program.rpc.initialize({
@@ -61,17 +63,13 @@ const Main = () => {
 		const provider = new Provider(connection, wallet, {})
 		const program = new Program(idl, programID, provider)
 		const userAcc = generateUserKey(programID, provider.wallet.publicKey)
-		const keypairOne = Keypair.fromSecretKey(Uint8Array.from(config.samplePrivateKey))
-
-		console.log('userAcc', userAcc)
-		console.log('provider.wallet.publicKey', provider.wallet.publicKey.toString())
-		console.log('keypairOne.publicKey.publicKey', keypairOne.publicKey.toString())
+		// const keypairOne = Keypair.fromSecretKey(Uint8Array.from(config.samplePrivateKey))
 
 		try {
 			console.log('inputValue', inputValue)
 			await program.rpc.writeIntoArticle(inputValue, {
 				accounts: {
-					article: keypairOne.publicKey,
+					article: solanaArticleAccount,
 				},
 			})
 			console.log('Done')
@@ -80,17 +78,19 @@ const Main = () => {
 			return alert(e)
 		}
 
-		const articleData = await program.account.article.fetch(keypairOne.publicKey)
-		console.log('article data', articleData)
+		getAndSetArticle()
 	}
 
-	const getArticle = async () => {
+	// Returns the article data
+	const getAndSetArticle = async () => {
 		const provider = new Provider(connection, wallet, {})
 		const program = new Program(idl, programID, provider)
-		const keypairOne = Keypair.fromSecretKey(Uint8Array.from(config.samplePrivateKey))
+		// const keypairOne = Keypair.fromSecretKey(Uint8Array.from(config.samplePrivateKey))
 
-		const articleData = await program.account.article.fetch(keypairOne.publicKey)
-		console.log('article data', articleData)
+		const articleData = await program.account.article.fetch(solanaArticleAccount)
+		setSolanaArticle(articleData.content)
+		setIsLoading(false)
+		console.log('article data', articleData.content)
 	}
 
 	// To limit users to input up to 3 words and up to 15 chars long each separated by a space
@@ -119,20 +119,20 @@ const Main = () => {
 			</header>
 
 			{isLoading ? (
-				<Paper elevation={2} className='content-box'>
+				<Paper elevation={20} className='content-box'>
 					<Skeleton variant='text' />
 					<Skeleton variant='text' />
 					<Skeleton variant='text' />
 				</Paper>
 			) : (
-				<Paper elevation={2} className='content-box'>
-					This is the text that will show the article.
+				<Paper elevation={20} className='content-box'>
+					{solanaArticle}
 				</Paper>
 			)}
 
 			{/* <Button onClick={initialize} color="secondary" variant="contained">initialize</Button> */}
 
-			<div>
+			<div className="three-words-input-container">
 				<TextField
 					id='outlined-basic'
 					label='Write to the open book (3 words max)'
@@ -141,7 +141,11 @@ const Main = () => {
 					value={inputValue}
 					onChange={e => checkAndAddWords(e)}
 				/>
-				<Button onClick={uploadWords}>Submit</Button>
+				<Button onClick={uploadWords} variant="contained" className="submit-button">Submit</Button>
+			</div>
+
+			<div className="helper-description">
+				The Solana Open Book is a fun collaborative experiment where Solana users write a book collaboratively. You come here, continue the story and move on. Little contributions like that help create an interesting book that could be fun or a total disaster. Keep it clean! It's a great starter project for people that want to learn how to create Solana dapps while learning Rust, Anchor and React in the process. Check the code here: <a href="https://github.com/merlox/solana-world-article" target="_blank">github.com/merlox/solana-world-article</a> and feel free to add any improvements you like! I'll be checking the pull requests for cool contributions and mentioning contributors in the Readme and in my twitter (<a href="https://twitter.com/merunas2" target="_blank">@merunas2</a>).
 			</div>
 		</>
 	)

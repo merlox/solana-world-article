@@ -9,7 +9,7 @@ pub mod solana_global_article {
         // Get the article
         let article_account = &mut ctx.accounts.article;
         // Initialize the variables (this is required)
-        article_account.content = ("").to_string();
+        article_account.content = ("This is the story of").to_string();
 
         Ok(())
     }
