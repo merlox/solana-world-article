@@ -9,7 +9,7 @@ pub mod solana_global_article {
         // Get the article
         let article_account = &mut ctx.accounts.article;
         // Initialize the variables (this is required)
-        article_account.content = ("This is the story of").to_string();
+        article_account.content = ("This is the story of ").to_string();
 
         Ok(())
     }
@@ -32,7 +32,7 @@ pub mod solana_global_article {
             }
             final_words.push(s);
             counter_added += 1;
-            if counter_added >= 3 {
+            if counter_added >= 5 {
                 break;
             }
         }

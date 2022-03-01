@@ -2,11 +2,8 @@ import React from 'react'
 import {
 	ConnectionProvider,
 	WalletProvider,
-	useConnection,
-	useWallet,
 } from '@solana/wallet-adapter-react'
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
-import { clusterApiUrl } from '@solana/web3.js'
 import {
 	LedgerWalletAdapter,
 	PhantomWalletAdapter,

@@ -4,6 +4,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
+const fs = require('fs-extra')
 
 const config = {
 	entry: './src/index.js',
@@ -72,6 +73,15 @@ const config = {
 			template: './src/index.ejs',
 			filename: 'index.html',
 		}),
+		{
+			// Copy files to the outside root folder for github pages purposes
+			apply: compiler => {
+				compiler.hooks.afterEmit.tap('AfterEmitPlugin', compilation => {
+					fs.removeSync(path.join(__dirname.split('/app')[0], 'docs'))
+					fs.copySync(path.join(__dirname, 'docs'), path.join(__dirname.split('/app')[0], 'docs'))
+				})
+			},
+		},
 	],
 }
 

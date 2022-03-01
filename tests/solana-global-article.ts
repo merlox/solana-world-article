@@ -9,6 +9,7 @@ describe('solana-global-article', () => {
   anchor.setProvider(anchor.Provider.env())
 
   const program = anchor.workspace.SolanaGlobalArticle as Program<SolanaGlobalArticle>
+  const initialText = 'This is the story of '
 
   it('Is initialized!', async () => {
     const deployerKeypair = anchor.web3.Keypair.generate()
@@ -39,7 +40,7 @@ describe('solana-global-article', () => {
       signers: [deployerKeypair],
     })
     
-    await program.rpc.writeIntoArticle('hey', {
+    await program.rpc.writeIntoArticle('a', {
       accounts: {
         article: deployerKeypair.publicKey,
       },
@@ -47,12 +48,14 @@ describe('solana-global-article', () => {
     })
 
     const articleData = await program.account.article.fetch(deployerKeypair.publicKey)
-    expect(articleData.content).to.equal('hey ') // Note the space at the end, added by the program
+    expect(articleData.content).to.equal(initialText + 'a ') // Note the space at the end, added by the program
   })
 
-  it("should write 3 words two times", async () => {
+  it("should write 5 words two times", async () => {
     const deployerKeypair = anchor.web3.Keypair.generate()
     const authority = program.provider.wallet
+    const text1 = 'a brave soldier fighting for'
+    const text2 = "a world he didn't build"
 
     // Add your test here
     await program.rpc.initialize({
@@ -64,14 +67,14 @@ describe('solana-global-article', () => {
       signers: [deployerKeypair],
     })
     
-    await program.rpc.writeIntoArticle('hey whats up', {
+    await program.rpc.writeIntoArticle(text1, {
       accounts: {
         article: deployerKeypair.publicKey,
       },
       signers: [],
     })
 
-    await program.rpc.writeIntoArticle('this is my', {
+    await program.rpc.writeIntoArticle(text2, {
       accounts: {
         article: deployerKeypair.publicKey,
       },
@@ -79,7 +82,6 @@ describe('solana-global-article', () => {
     })
 
     const articleData = await program.account.article.fetch(deployerKeypair.publicKey)
-    console.log('article data', articleData)
-    expect(articleData.content).to.equal('hey whats up this is my ') // Note the space at the end, added by the program
+    expect(articleData.content).to.equal(initialText + text1 + ' ' + text2 + ' ') // Note the space at the end, added by the program
   })
 })

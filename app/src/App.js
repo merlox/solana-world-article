@@ -101,7 +101,7 @@ const Main = () => {
 				return
 			}
 		}
-		if (words.length > 3) return
+		if (words.length > 5) return
 		setInputValue(words.join(' '))
 	}
 
@@ -135,7 +135,7 @@ const Main = () => {
 			<div className="three-words-input-container">
 				<TextField
 					id='outlined-basic'
-					label='Write to the open book (3 words max)'
+					label='Write to the open book (5 words max)'
 					variant='outlined'
 					className='words-input'
 					value={inputValue}
